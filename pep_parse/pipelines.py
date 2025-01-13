@@ -8,10 +8,17 @@ from pep_parse.settings import BASE_DIR, DATETIME_FORMAT, RESULTS_DIR
 
 
 class PepParsePipeline:
+    """
+    Pipeline для подсчета статусов PEP и сохранения результатов в CSV-файл.
+    """
     def open_spider(self, spider):
+        """
+        Инициализирует словарь для подсчета статусов PEP при открытии паука.
+        """
         self.pep_status_counts = defaultdict(int)
 
     def process_item(self, item, spider):
+        """Обрабатывает каждый PEP и подсчитывает его статус."""
         pep_status = item.get('status')
         if pep_status is None:
             raise DropItem(f'Неизвестный статус pep - {item}')
@@ -19,6 +26,10 @@ class PepParsePipeline:
         return item
 
     def close_spider(self, spider):
+        """
+        Сохраняет результаты подсчета статусов PEP в CSV-файл
+        при закрытии паука.
+        """
         results_dir = BASE_DIR / RESULTS_DIR
         results_dir.mkdir(exist_ok=True)
 
